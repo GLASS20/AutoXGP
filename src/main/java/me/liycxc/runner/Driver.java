@@ -1,13 +1,9 @@
 package me.liycxc.runner;
 
-import lombok.experimental.UtilityClass;
-import org.checkerframework.checker.units.qual.C;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +27,7 @@ public class Driver {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
         Map<String, Object> prefs = new HashMap<>();
-        prefs.put("intl.accept_languages", "en-US"); // ÉèÖÃÎªÓ¢Óï£¨ÃÀ¹ú£©ÓïÑÔ
+        prefs.put("intl.accept_languages", "en-US"); // è®¾ç½®ä¸ºè‹±è¯­ï¼ˆç¾Žå›½ï¼‰è¯­è¨€
         options.setExperimentalOption("prefs", prefs);
 
         driver = new ChromeDriver(options);

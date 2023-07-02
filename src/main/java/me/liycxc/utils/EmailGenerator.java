@@ -12,12 +12,12 @@ import java.util.Random;
  * @time: 22:43
  */
 public class EmailGenerator {
-    // Éú³ÉËæ»úÓÊÏä
+    // ç”Ÿæˆéšæœºé‚®ç®±
     public static String generateRandomEmail() {
         return generateRandomString(8);
     }
 
-    // Éú³ÉËæ»úÃÜÂë
+    // ç”Ÿæˆéšæœºå¯†ç 
     public static String generateRandomPassword() {
         String[] characters = {"abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "0123456789", "!@#$%^&*"};
         Random random = new Random();
@@ -33,7 +33,7 @@ public class EmailGenerator {
         return password.toString();
     }
 
-    // Éú³ÉËæ»ú×Ö·û´®
+    // ç”Ÿæˆéšæœºå­—ç¬¦ä¸²
     public static String generateRandomString(int length) {
         String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();

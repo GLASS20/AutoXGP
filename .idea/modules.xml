@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/AutoXGP.main.iml" filepath="$PROJECT_DIR$/.idea/modules/AutoXGP.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AutoXGP.test.iml" filepath="$PROJECT_DIR$/.idea/modules/AutoXGP.test.iml" />
     </modules>
   </component>
 </project>
