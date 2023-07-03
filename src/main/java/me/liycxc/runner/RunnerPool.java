@@ -1,5 +1,6 @@
 package me.liycxc.runner;
 
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,13 +18,10 @@ import java.util.Arrays;
  */
 @RestController
 public class RunnerPool {
-    public static ArrayList<Thread> runners = new ArrayList<>();
+    public static ArrayList<Runner> runners = new ArrayList<>();
     @GetMapping("/xgp")
     public static void createMicrosoft() {
-        if (Driver.driver == null) {
-            Driver.init();
-        }
-        Thread thread = new Thread(new Runner());
+        Runner thread = new Runner();
         runners.add(thread);
         thread.start();
     }

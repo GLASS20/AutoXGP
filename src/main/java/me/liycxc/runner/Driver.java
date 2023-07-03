@@ -16,14 +16,10 @@ import java.util.Map;
  * @time: 22:23
  */
 public class Driver {
-    public static ChromeDriver driver;
-    public static void init() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-        }
+    public static ChromeDriver getDriver() {
         System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
 
+        ChromeDriver driver;
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
         Map<String, Object> prefs = new HashMap<>();
@@ -32,5 +28,7 @@ public class Driver {
 
         driver = new ChromeDriver(options);
         driver.manage().deleteAllCookies();
+
+        return driver;
     }
 }

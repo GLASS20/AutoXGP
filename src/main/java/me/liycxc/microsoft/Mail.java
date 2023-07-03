@@ -2,7 +2,12 @@ package me.liycxc.microsoft;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import me.liycxc.AppMain;
 import me.liycxc.utils.Logger;
+import me.shivzee.JMailTM;
+import me.shivzee.callbacks.EventListener;
+import me.shivzee.util.JMailBuilder;
+import me.shivzee.util.Message;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -12,8 +17,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import javax.security.auth.login.LoginException;
+import java.io.IOError;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This file is part of AutoXGP project.
@@ -26,7 +37,7 @@ import java.net.http.HttpClient;
  */
 @Slf4j
 public class Mail {
-    public static String MAIL_API = "https://api.yx1024.cc/getAccountApi.aspx?uid=56264&type=69&token=b651978588381cf1c3363daff02705a2&count=1";
+    public static String MAIL_API = "https://api.yx1024.cc/getAccountApi.aspx?uid=56264&type=69&token=" + AppMain.API_MAIL_TOKEN +"&count=1";
 
     public static String[] getMailByApi() {
         HttpGet httpGet = new HttpGet(URI.create(MAIL_API));
@@ -62,5 +73,55 @@ public class Mail {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static List<JMailTM> mails = new ArrayList<>();
+    public static Object creatMail(String password) {
+        try {
+            JMailTM mailer = JMailBuilder.createDefault(password);
+            mailer.init();
+            mails.add(mailer);
+
+            return mailer;
+        } catch (LoginException exception) {
+            System.out.println("Exception Caught " + exception);
+            return exception.toString();
+        }
+    }
+
+    public static String getCodeByMail(JMailTM mailer) {
+        final String[] securityCode = {null};
+        mailer.openEventListener(new EventListener() {
+            @Override
+            public void onMessageReceived(Message message) {
+                String[] parts = message.getContent().split("Security code: ");
+                String securityCodeValue = parts[1].trim();
+                System.out.println("SecurityCode : " + securityCodeValue);
+                // To Mark Message As Read
+                message.markAsRead(status -> {
+                    System.out.println("Message " + message.getId() + " Marked As Read");
+                });
+
+                securityCode[0] = securityCodeValue;
+            }
+
+            @Override
+            public void onError(String error) {
+                System.out.println("Some Error Occurred " + error);
+                securityCode[0] = "Error " + error;
+            }
+        });
+
+        while (securityCode[0] == null) {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
+        }
+
+        mailer.closeMessageListener();
+
+        return securityCode[0];
     }
 }

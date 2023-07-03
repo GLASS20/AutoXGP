@@ -1,10 +1,9 @@
 package me.liycxc;
 
-import me.liycxc.runner.Driver;
-import me.liycxc.runner.Runner;
-import me.liycxc.runner.RunnerPool;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.Arrays;
 
 /**
  * This file is part of AutoXGP project.
@@ -17,7 +16,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class AppMain {
+    public static String API_MAIL_TOKEN;
+    public static String API_ALIPAY_ACCOUNT;
+    public static String API_ALIPAY_PASSWORD;
+    public static String API_ALIPAY_PAYKEY;
     public static void main(String[] args) {
+        API_MAIL_TOKEN = args[0];
+        API_ALIPAY_ACCOUNT = args[1];
+        API_ALIPAY_PASSWORD = args[2];
+        API_ALIPAY_PAYKEY = args[3];
         SpringApplication.run(AppMain.class, args);
     }
 }
