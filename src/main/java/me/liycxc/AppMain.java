@@ -3,8 +3,6 @@ package me.liycxc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Arrays;
-
 /**
  * This file is part of AutoXGP project.
  * Copyright 2023 Liycxc
