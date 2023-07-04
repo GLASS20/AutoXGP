@@ -1,5 +1,7 @@
 package me.liycxc.microsoft;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.liycxc.AppMain;
 import me.shivzee.JMailTM;
 import org.openqa.selenium.By;
@@ -10,7 +12,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -24,7 +25,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @time: 22:26
  */
 public class Microsoft {
-    public static HashMap<Boolean,String> loginAccount(ChromeDriver driver,String[] account) {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    public static ObjectNode loginAccount(ChromeDriver driver, String[] account) {
+        ObjectNode json = OBJECT_MAPPER.createObjectNode();
+
         driver.get("https://login.live.com");
         // WebWaiter
         WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -44,7 +49,9 @@ public class Microsoft {
         try {
             WebElement error = errorWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("usernameError")));
             if (error.isDisplayed()) {
-                return errorMap("Username Error");
+                json.put("code", 1);
+                json.put("msg", "Username error");
+                return json;
             }
         } catch (Exception ignored) {}
 
@@ -59,14 +66,18 @@ public class Microsoft {
         try {
             WebElement error = errorWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("passwordError")));
             if (error.isDisplayed()) {
-                return errorMap("Password Error");
+                json.put("code", 1);
+                json.put("msg", "Password error");
+                return json;
             }
         } catch (Exception ignored) {}
 
         try {
             WebElement dontShow = driverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("KmsiCheckboxField")));
             if (!dontShow.isDisplayed()) {
-                return errorMap("2FA");
+                json.put("code", 1);
+                json.put("msg", "2FA");
+                return json;
             }
         } catch (Exception ignored) {
         }
@@ -94,8 +105,11 @@ public class Microsoft {
             try {
                 Object mail = Mail.creatMail(account[1]);
                 if (mail instanceof String) {
-                    return errorMap("Email error at " + mail);
+                    json.put("code", 1);
+                    json.put("msg", "Email error at " + mail);
+                    return json;
                 }
+
                 JMailTM mailTm = (JMailTM) mail;
 
                 // EmailAddress
@@ -108,7 +122,9 @@ public class Microsoft {
 
                 String securityCode = Mail.getCodeByMail(mailTm);
                 if (securityCode.startsWith("error ")) {
-                    return errorMap("Get SecurityCode at" + securityCode);
+                    json.put("code", 1);
+                    json.put("msg", "Get SecurityCode at" + securityCode);
+                    return json;
                 }
 
                 // iOttText
@@ -119,18 +135,23 @@ public class Microsoft {
                 email = mailTm.getSelf().getEmail();
                 System.out.println(mailTm.getSelf().getEmail() + " " + account[1]);
             } catch (Exception exception) {
-                return errorMap("Set SecurityInfo error at " + exception);
+                json.put("code", 1);
+                json.put("msg", "Set SecurityInfo error at " + exception);
+                return json;
             }
         }
 
         System.out.println("Login " + account[0] + " " + account[1] + " succeed " + email);
-        return valueMap(true, email);
+
+        json.put("code", 0);
+        json.put("msg", "ok");
+        json.put("SecureMailbox", email);
+        return json;
     }
 
-    public static HashMap<Boolean, String> gamePassByCookie(ChromeDriver driver, String[] account) {
+    public static ObjectNode gamePassByCookie(ChromeDriver driver) {
         // https://www.xbox.com/en-US/xbox-game-pass
-        // 新的标签页
-        String retValue = null;
+        ObjectNode json = OBJECT_MAPPER.createObjectNode();
 
         driver.switchTo().newWindow(WindowType.TAB);
         driver.get("https://www.xbox.com/zh-HK/xbox-game-pass/pc-game-pass?xr=shellnav");
@@ -139,8 +160,12 @@ public class Microsoft {
         WebDriverWait threeWait = new WebDriverWait(driver, Duration.ofSeconds(3));
 
         // mectrl_headerPicture
-        WebElement login = driverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("mectrl_main_trigger")));
-        login.click();
+        try {
+            WebElement login = driverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("mectrl_main_trigger")));
+            login.click();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 
         int index = 1;
         do {
@@ -151,7 +176,9 @@ public class Microsoft {
             try {
                 // id failure
                 if (index > 4) {
-                    return errorMap("What's up?");
+                    json.put("code", 1);
+                    json.put("msg", "Set xbox id error");
+                    return json;
                 }
 
                 WebElement failure = threeWait.until(ExpectedConditions.visibilityOfElementLocated(By.className("failure")));
@@ -214,16 +241,8 @@ public class Microsoft {
         alipay7.click();
 
 
-        return valueMap(true, retValue);
-    }
-
-    private static HashMap<Boolean, String> errorMap(String error) {
-        return valueMap(false, error);
-    }
-
-    private static HashMap<Boolean, String> valueMap(boolean value, String str) {
-        HashMap<Boolean, String> map = new HashMap<>();
-        map.put(value, str);
-        return map;
+        json.put("code", 0);
+        json.put("msg", "Ok");
+        return json;
     }
 }

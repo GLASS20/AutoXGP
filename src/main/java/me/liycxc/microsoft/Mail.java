@@ -1,9 +1,7 @@
 package me.liycxc.microsoft;
 
-import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import me.liycxc.AppMain;
-import me.liycxc.utils.Logger;
 import me.shivzee.JMailTM;
 import me.shivzee.callbacks.EventListener;
 import me.shivzee.util.JMailBuilder;
@@ -18,12 +16,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOError;
-import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -53,7 +47,7 @@ public class Mail {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault(); CloseableHttpResponse execute = httpClient.execute(httpGet);) {
             if (execute.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                Logger.logger.info("Get mail api error status code: " + execute.getStatusLine().getStatusCode());
+                System.out.println("Get mail api error status code: " + execute.getStatusLine().getStatusCode());
                 return null;
             }
             HttpEntity entity = execute.getEntity();

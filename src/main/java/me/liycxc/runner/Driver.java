@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class Driver {
     public static ChromeDriver getDriver() {
-        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 
         ChromeDriver driver;
         ChromeOptions options = new ChromeOptions();
