@@ -11,10 +11,14 @@ import java.util.Random;
  * @date: 2023-07-01
  * @time: 22:43
  */
-public class EmailGenerator {
+public class Generator {
     // 生成随机邮箱
     public static String generateRandomEmail() {
         return generateRandomString(8);
+    }
+
+    public static String generatePlayerId() {
+        return "liy" + generateRandomString(6);
     }
 
     // 生成随机密码

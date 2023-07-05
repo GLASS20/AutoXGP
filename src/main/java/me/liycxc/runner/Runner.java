@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.liycxc.microsoft.Microsoft;
 import me.liycxc.utils.CookieUtils;
+import me.liycxc.utils.Generator;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -64,7 +66,7 @@ public class Runner {
 
     @GetMapping("/xgp")
     public static String createMicrosoft() throws InterruptedException {
-        WebDriver driver = Driver.getDriver();
+        FirefoxDriver driver = Driver.getDriver();
         driver.manage().deleteAllCookies();
 
         String[] account = new String[]{"metelngonyar@hotmail.com", "Gn37ms56"}; // Mail.getMailByApi();
@@ -74,11 +76,20 @@ public class Runner {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode().objectNode();
 
+        ObjectNode alipayJson = Microsoft.loginAlipay(driver);
+        if (alipayJson.get("code").asInt() == 1) {
+            json.put("code", 1);
+            json.put("step", "Login alipay with cookie");
+            json.put("error", alipayJson.get("msg").asText());
+            return json.toString();
+        }
+
         ObjectNode loginJson = Microsoft.loginAccount(driver, account);
+
         if (loginJson.get("code").asInt() != 0) {
             json.put("code", loginJson.get("code").asInt());
             json.put("step", "Login microsoft account");
-            json.put("error", loginJson.get("msg").toString());
+            json.put("error", loginJson.get("msg").asText());
             return json.toString();
         }
 
@@ -86,7 +97,24 @@ public class Runner {
         if (xgpJson.get("code").asInt() != 0) {
             json.put("code", xgpJson.get("code").asInt());
             json.put("step", "Subscribe to xbox game pass");
-            json.put("error", xgpJson.get("msg").toString());
+            json.put("error", xgpJson.get("msg").asText());
+            return json.toString();
+        }
+
+        ObjectNode archiveJson = Microsoft.archiveByCookie(driver, Generator.generatePlayerId());
+        if (archiveJson.get("code").asInt() != 0) {
+            json.put("code", archiveJson.get("code").asInt());
+            json.put("step", "Set minecraft id");
+            json.put("error", archiveJson.get("msg").asText());
+            return json.toString();
+        }
+
+        ObjectNode backMoneyJson = Microsoft.backMoney(driver, account);
+        if (backMoneyJson.get("code").asInt() != 0) {
+            System.out.println("Back money error: " + account[0] + ":" + account[1]);
+            json.put("code", backMoneyJson.get("code").asInt());
+            json.put("step", "Back my money");
+            json.put("error", backMoneyJson.get("msg").asText());
             return json.toString();
         }
 

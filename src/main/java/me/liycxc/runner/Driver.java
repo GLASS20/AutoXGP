@@ -1,7 +1,6 @@
 package me.liycxc.runner;
 
 import me.liycxc.AppMain;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -20,7 +19,7 @@ import java.util.Map;
  * @time: 22:23
  */
 public class Driver {
-    public static WebDriver getDriver() {
+    public static FirefoxDriver getDriver() {
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 

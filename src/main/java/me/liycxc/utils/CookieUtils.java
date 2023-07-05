@@ -35,7 +35,7 @@ public class CookieUtils {
         }
     }
 
-    public static void loadCookies(WebDriver driver) {
+    public static boolean loadCookies(WebDriver driver) {
         try {
             FileInputStream fileIn = new FileInputStream(CONFIG_FILE_PATH);
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
@@ -45,8 +45,10 @@ public class CookieUtils {
             for (Cookie cookie : cookies) {
                 driver.manage().addCookie(cookie);
             }
+            return true;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }
