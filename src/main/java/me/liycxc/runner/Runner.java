@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.liycxc.microsoft.Microsoft;
 import me.liycxc.utils.CookieUtils;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.WebDriver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,9 +20,29 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class Runner {
-    @GetMapping("/alipay")
-    public static String saveAlipayCookies() throws InterruptedException {
-        ChromeDriver driver = Driver.getDriver();
+
+    @GetMapping("/load")
+    public static String testSaveCookies() throws InterruptedException {
+        WebDriver driver = Driver.getDriver();
+        driver.manage().deleteAllCookies();
+
+        driver.get("https://www.alipay.com");
+
+        CookieUtils.loadCookies(driver);
+
+        driver.navigate().refresh();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode json = objectMapper.createObjectNode();
+        json.put("code", 0);
+        json.put("info", "Load cookies successful");
+
+        return json.toString();
+    }
+
+    @GetMapping("/save")
+    public static String testLoadCookies() throws InterruptedException {
+        WebDriver driver = Driver.getDriver();
         driver.manage().deleteAllCookies();
 
         driver.get("https://auth.alipay.com/login/index.htm?goto=https%3A%2F%2Fwww.alipay.com%2F");
@@ -36,19 +56,16 @@ public class Runner {
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode();
-
-        json.put("state", "OK");
-        json.put("Info", "Save cookies successful");
+        json.put("code", 0);
+        json.put("info", "Save cookies successful");
 
         return json.toString();
     }
 
     @GetMapping("/xgp")
-    public static String createMicrosoft() {
-        ChromeDriver driver = Driver.getDriver();
+    public static String createMicrosoft() throws InterruptedException {
+        WebDriver driver = Driver.getDriver();
         driver.manage().deleteAllCookies();
-
-        CookieUtils.loadCookies(driver);
 
         String[] account = new String[]{"metelngonyar@hotmail.com", "Gn37ms56"}; // Mail.getMailByApi();
 
@@ -65,7 +82,7 @@ public class Runner {
             return json.toString();
         }
 
-        ObjectNode xgpJson = Microsoft.gamePassByCookie(driver);
+        ObjectNode xgpJson = Microsoft.gamePassByCookie(driver, account);
         if (xgpJson.get("code").asInt() != 0) {
             json.put("code", xgpJson.get("code").asInt());
             json.put("step", "Subscribe to xbox game pass");

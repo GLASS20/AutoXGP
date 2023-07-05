@@ -15,14 +15,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AppMain {
     public static String API_MAIL_TOKEN;
-    public static String API_ALIPAY_ACCOUNT;
-    public static String API_ALIPAY_PASSWORD;
     public static String API_ALIPAY_PAYKEY;
+    public static String DRIVER_DATA;
     public static void main(String[] args) {
         API_MAIL_TOKEN = args[0];
-        API_ALIPAY_ACCOUNT = args[1];
-        API_ALIPAY_PASSWORD = args[2];
-        API_ALIPAY_PAYKEY = args[3];
+        API_ALIPAY_PAYKEY = args[1];
+        DRIVER_DATA = args[2];
         SpringApplication.run(AppMain.class, args);
     }
 }
