@@ -2,6 +2,7 @@ package me.liycxc.runner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.liycxc.microsoft.Mail;
 import me.liycxc.microsoft.Microsoft;
 import me.liycxc.utils.CookieUtils;
 import me.liycxc.utils.Generator;
@@ -64,17 +65,26 @@ public class Runner {
         return json.toString();
     }
 
-    @GetMapping("/xgp")
+    @GetMapping("/get")
     public static String createMicrosoft() throws InterruptedException {
         FirefoxDriver driver = Driver.getDriver();
         driver.manage().deleteAllCookies();
 
-        String[] account = new String[]{"metelngonyar@hotmail.com", "Gn37ms56"}; // Mail.getMailByApi();
-
-        System.out.println("Login " + account[0] + " " + account[1]);
-
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode().objectNode();
+
+        String[] account = Mail.getMailByApi();
+
+        if (account == null || account[0] == null || account[1] == null) {
+            json.put("code", -1);
+            json.put("step", "Check account");
+            return json.toString();
+        } else {
+            json.put("email", account[0]);
+            json.put("password", account[1]);
+        }
+
+        System.out.println("Login " + account[0] + " " + account[1]);
 
         ObjectNode alipayJson = Microsoft.loginAlipay(driver);
         if (alipayJson.get("code").asInt() == 1) {
