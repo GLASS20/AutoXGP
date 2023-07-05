@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Microsoft {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public static ObjectNode loginAlipay(FirefoxDriver driver) throws InterruptedException {
+    public static ObjectNode loginAlipay(FirefoxDriver driver) {
         ObjectNode json = OBJECT_MAPPER.createObjectNode();
 
         driver.get("https://www.alipay.com");
@@ -36,7 +36,35 @@ public class Microsoft {
 
         driver.navigate().refresh();
 
-        Thread.sleep(1500);
+        try {
+            driver.get("https://auth.alipay.com/login/index.htm");
+
+            WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            WebElement loginType = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//li[text()='账密登录']")));
+            loginType.click();
+
+            WebElement usernameText = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='J-input-user']")));
+            usernameText.clear();
+            usernameText.sendKeys(AppMain.API_ALIPAY_USERNAME);
+
+            WebElement passwordText = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='password_rsainput']")));
+            passwordText.sendKeys(AppMain.API_ALIPAY_PASSWORD);
+
+            Thread.sleep(1500);
+
+            WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='J-login-btn']")));
+            next.click();
+
+            // check is login, auto jump to https://b.alipay.com/page/home after logined
+            WebElement info = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='商家平台']")));
+            System.out.println(info.getText());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            json.put("code", 1);
+            json.put("msg", exception.toString());
+            return json;
+        }
 
         json.put("code", loadCookies ? 0 : 1);
         json.put("msg", loadCookies ? "cookies ok" : "cookies error");

@@ -11,12 +11,21 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 
+import javax.net.ssl.SSLContext;
 import javax.security.auth.login.LoginException;
 import java.net.URI;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +43,21 @@ public class Mail {
     public static String MAIL_API = "https://api.yx1024.cc/getAccountApi.aspx?uid=56264&type=69&token=" + AppMain.API_MAIL_TOKEN +"&count=1";
 
     public static String[] getMailByApi() {
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                    return true;
+                }
+            }).build();
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+        CloseableHttpClient client = HttpClients.custom().setSSLContext(sslContext).
+                setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+
         HttpGet httpGet = new HttpGet(URI.create(MAIL_API));
 
         RequestConfig.Builder builder = RequestConfig
@@ -45,7 +69,7 @@ public class Mail {
         RequestConfig defaultRequestConfig = builder.build();
         httpGet.setConfig(defaultRequestConfig);
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault(); CloseableHttpResponse execute = httpClient.execute(httpGet);) {
+        try (CloseableHttpClient httpClient = client; CloseableHttpResponse execute = httpClient.execute(httpGet);) {
             if (execute.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 System.out.println("Get mail api error status code: " + execute.getStatusLine().getStatusCode());
                 return null;
@@ -53,15 +77,13 @@ public class Mail {
             HttpEntity entity = execute.getEntity();
             // like -> metelngonyar@hotmail.com----Gn37ms56
             String responseString = EntityUtils.toString(entity);
+
+            System.out.println("Response: " + responseString);
+
             String[] parts = responseString.split("\\|+|-{4}");
 
             String[] result = new String[parts.length];
             System.arraycopy(parts, 0, result, 0, parts.length);
-
-            // 打印结果
-            for (String str : result) {
-                System.out.println(str);
-            }
             return result;
         } catch (Exception e) {
             e.printStackTrace();

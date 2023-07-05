@@ -2,7 +2,6 @@ package me.liycxc.runner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import me.liycxc.microsoft.Mail;
 import me.liycxc.microsoft.Microsoft;
 import me.liycxc.utils.CookieUtils;
 import me.liycxc.utils.Generator;
@@ -57,12 +56,22 @@ public class Runner {
 
         CookieUtils.saveCookies(driver);
 
+        driver.quit();
+
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode();
         json.put("code", 0);
         json.put("info", "Save cookies successful");
 
         return json.toString();
+    }
+
+    @GetMapping("/sb")
+    public static void sb() {
+        FirefoxDriver driver = Driver.getDriver();
+        // driver.manage().deleteAllCookies();
+
+        Microsoft.loginAlipay(driver);
     }
 
     @GetMapping("/get")
@@ -73,11 +82,12 @@ public class Runner {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode().objectNode();
 
-        String[] account = Mail.getMailByApi();
+        String[] account = new String[]{"metelngonyar@hotmail.com", "Gn37ms56"}; // Mail.getMailByApi();
 
         if (account == null || account[0] == null || account[1] == null) {
             json.put("code", -1);
             json.put("step", "Check account");
+            driver.quit();
             return json.toString();
         } else {
             json.put("email", account[0]);
@@ -91,6 +101,7 @@ public class Runner {
             json.put("code", 1);
             json.put("step", "Login alipay with cookie");
             json.put("error", alipayJson.get("msg").asText());
+            driver.quit();
             return json.toString();
         }
 
@@ -100,6 +111,7 @@ public class Runner {
             json.put("code", loginJson.get("code").asInt());
             json.put("step", "Login microsoft account");
             json.put("error", loginJson.get("msg").asText());
+            driver.quit();
             return json.toString();
         }
 
@@ -108,6 +120,7 @@ public class Runner {
             json.put("code", xgpJson.get("code").asInt());
             json.put("step", "Subscribe to xbox game pass");
             json.put("error", xgpJson.get("msg").asText());
+            driver.quit();
             return json.toString();
         }
 
@@ -116,6 +129,7 @@ public class Runner {
             json.put("code", archiveJson.get("code").asInt());
             json.put("step", "Set minecraft id");
             json.put("error", archiveJson.get("msg").asText());
+            driver.quit();
             return json.toString();
         }
 
@@ -125,11 +139,13 @@ public class Runner {
             json.put("code", backMoneyJson.get("code").asInt());
             json.put("step", "Back my money");
             json.put("error", backMoneyJson.get("msg").asText());
+            driver.quit();
             return json.toString();
         }
 
         json.put("code", 0);
         json.put("account", account[0] + ":" + account[1]);
+        driver.quit();
         return json.toString();
     }
 }

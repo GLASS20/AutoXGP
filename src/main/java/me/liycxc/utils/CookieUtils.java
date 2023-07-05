@@ -44,6 +44,7 @@ public class CookieUtils {
             fileIn.close();
             for (Cookie cookie : cookies) {
                 driver.manage().addCookie(cookie);
+                System.out.println(cookie);
             }
             return true;
         } catch (IOException | ClassNotFoundException e) {

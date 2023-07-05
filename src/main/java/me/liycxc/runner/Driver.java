@@ -26,6 +26,8 @@ public class Driver {
         FirefoxDriver driver;
         FirefoxOptions options = new FirefoxOptions();
         FirefoxProfile firefoxProfile = new FirefoxProfile(new File(AppMain.DRIVER_DATA));
+        options.addPreference("dom.webdriver.enabled", false);
+        options.addPreference("useAutomationExtension", false);
         options.setProfile(firefoxProfile);
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("intl.accept_languages", "en-US"); // 设置为英语（美国）语言片
