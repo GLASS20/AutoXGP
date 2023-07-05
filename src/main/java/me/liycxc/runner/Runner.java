@@ -82,7 +82,7 @@ public class Runner {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode().objectNode();
 
-        String[] account = new String[]{"metelngonyar@hotmail.com", "Gn37ms56"}; // Mail.getMailByApi();
+        String[] account =/* Mail.getMailByApi();*/ new String[]{"baxaliwettigk@hotmail.com", "hYiaui13"};
 
         if (account == null || account[0] == null || account[1] == null) {
             json.put("code", -1);
@@ -101,7 +101,7 @@ public class Runner {
             json.put("code", 1);
             json.put("step", "Login alipay with cookie");
             json.put("error", alipayJson.get("msg").asText());
-            driver.quit();
+            // driver.quit();
             return json.toString();
         }
 
@@ -111,7 +111,7 @@ public class Runner {
             json.put("code", loginJson.get("code").asInt());
             json.put("step", "Login microsoft account");
             json.put("error", loginJson.get("msg").asText());
-            driver.quit();
+            // driver.quit();
             return json.toString();
         }
 
@@ -120,7 +120,7 @@ public class Runner {
             json.put("code", xgpJson.get("code").asInt());
             json.put("step", "Subscribe to xbox game pass");
             json.put("error", xgpJson.get("msg").asText());
-            driver.quit();
+            //driver.quit();
             return json.toString();
         }
 
@@ -129,7 +129,7 @@ public class Runner {
             json.put("code", archiveJson.get("code").asInt());
             json.put("step", "Set minecraft id");
             json.put("error", archiveJson.get("msg").asText());
-            driver.quit();
+            //driver.quit();
             return json.toString();
         }
 
@@ -139,13 +139,13 @@ public class Runner {
             json.put("code", backMoneyJson.get("code").asInt());
             json.put("step", "Back my money");
             json.put("error", backMoneyJson.get("msg").asText());
-            driver.quit();
+            //driver.quit();
             return json.toString();
         }
 
         json.put("code", 0);
         json.put("account", account[0] + ":" + account[1]);
-        driver.quit();
+        //driver.quit();
         return json.toString();
     }
 }

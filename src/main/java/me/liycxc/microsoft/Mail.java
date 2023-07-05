@@ -84,6 +84,8 @@ public class Mail {
 
             String[] result = new String[parts.length];
             System.arraycopy(parts, 0, result, 0, parts.length);
+            result[0] = result[0].replace("<br>", "").replace("</br>", "");
+            result[1] = result[1].replace("<br>", "").replace("</br>", "");
             return result;
         } catch (Exception e) {
             e.printStackTrace();

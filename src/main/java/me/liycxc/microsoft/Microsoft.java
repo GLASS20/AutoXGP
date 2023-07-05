@@ -44,21 +44,34 @@ public class Microsoft {
             WebElement loginType = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//li[text()='账密登录']")));
             loginType.click();
 
-            WebElement usernameText = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='J-input-user']")));
-            usernameText.clear();
-            usernameText.sendKeys(AppMain.API_ALIPAY_USERNAME);
+            int index = 0;
+            do {
+                index++;
+                if (index > 5) {
+                    throw new Exception("Login account error");
+                }
+                try {
+                    WebElement usernameText = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='J-input-user']")));
+                    usernameText.clear();
+                    usernameText.sendKeys(AppMain.API_ALIPAY_USERNAME);
 
-            WebElement passwordText = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='password_rsainput']")));
-            passwordText.sendKeys(AppMain.API_ALIPAY_PASSWORD);
+                    Thread.sleep(500);
 
-            Thread.sleep(1500);
+                    WebElement passwordText = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='password_rsainput']")));
+                    passwordText.clear();
+                    passwordText.sendKeys(AppMain.API_ALIPAY_PASSWORD);
 
-            WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='J-login-btn']")));
-            next.click();
+                    Thread.sleep(1500);
 
-            // check is login, auto jump to https://b.alipay.com/page/home after logined
-            WebElement info = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='商家平台']")));
-            System.out.println(info.getText());
+                    WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='J-login-btn']")));
+                    next.click();
+                } catch (Exception exception) {
+                    break;
+                }
+                Thread.sleep(2500);
+            } while (!driver.getCurrentUrl().toLowerCase().startsWith("https://b.alipay.com"));
+
+            driver.navigate().refresh();
         } catch (Exception exception) {
             exception.printStackTrace();
             json.put("code", 1);
@@ -140,6 +153,19 @@ public class Microsoft {
                     json.put("code", 1);
                     json.put("msg", "2FA");
                     return json;
+                }
+            } catch (Exception ignored) {
+            }
+
+            // Your Microsoft account brings everything together
+            try {
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='Continue']")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
                 }
             } catch (Exception ignored) {
             }
@@ -234,8 +260,8 @@ public class Microsoft {
         try {
             driver.get("https://www.xbox.com/zh-HK/xbox-game-pass/pc-game-pass?xr=shellnav");
 
-            WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(20));
-            WebDriverWait threeWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebDriverWait threeWait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
             // mectrl_headerPicture
             try {
@@ -251,47 +277,53 @@ public class Microsoft {
                 exception.printStackTrace();
             }
 
-            int index = 1;
-            do {
-                // Xbox archive nameid
-                WebElement nameId = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("create-account-gamertag-suggestion-" + index)));
+            // first set xbox archive
+            try {
+                int index = 1;
+                do {
+                    // Xbox archive nameid
+                    WebElement nameId = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("create-account-gamertag-suggestion-" + index)));
+                    while (true) {
+                        try {
+                            nameId.click();
+                        } catch (Exception exception) {
+                            break;
+                        }
+                    }
+
+                    try {
+                        // id failure
+                        if (index > 4) {
+                            json.put("code", 1);
+                            json.put("msg", "Set xbox id error");
+                            return json;
+                        }
+
+                        WebElement failure = threeWait.until(ExpectedConditions.presenceOfElementLocated(By.className("failure")));
+                        if (!failure.isDisplayed()) {
+                            break;
+                        }
+                        index++;
+                    } catch (Exception exception) {
+                        break;
+                    }
+                } while (true);
+
+                // inline-continue-control
+                WebElement letGo = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("inline-continue-control")));
                 while (true) {
                     try {
-                        nameId.click();
+                        letGo.click();
                     } catch (Exception exception) {
                         break;
                     }
                 }
-
-                try {
-                    // id failure
-                    if (index > 4) {
-                        json.put("code", 1);
-                        json.put("msg", "Set xbox id error");
-                        return json;
-                    }
-
-                    WebElement failure = threeWait.until(ExpectedConditions.presenceOfElementLocated(By.className("failure")));
-                    if (!failure.isDisplayed()) {
-                        break;
-                    }
-                    index++;
-                } catch (Exception exception) {
-                    break;
-                }
-            } while (true);
-
-            // inline-continue-control
-            WebElement letGo = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("inline-continue-control")));
-            while (true) {
-                try {
-                    letGo.click();
-                } catch (Exception exception) {
-                    break;
-                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
 
-            index = 0;
+            // click joinus xd
+            int index = 0;
             while (true) {
                 if (index > 3) {
                     json.put("code", 1);
@@ -316,9 +348,68 @@ public class Microsoft {
             }
 
             try {
-                WebElement passwordDesc = threeWait.until(ExpectedConditions.presenceOfElementLocated(By.id("passwordDesc")));
-                if (passwordDesc.isDisplayed()) {
-                    passwdSender(account, driverWait);
+                // loginfmt
+                WebElement loginfmt = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.name("loginfmt")));
+
+                loginfmt.sendKeys(account[0]);
+
+                // idSIButton9
+                WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+
+
+                WebDriverWait errorWait = new WebDriverWait(driver, Duration.ofMillis(1500));
+
+                // usernameError
+                try {
+                    WebElement error = errorWait.until(ExpectedConditions.presenceOfElementLocated(By.id("usernameError")));
+                    if (error.isDisplayed()) {
+                        json.put("code", 1);
+                        json.put("msg", "Username error");
+                        return json;
+                    }
+                } catch (Exception ignored) {
+                }
+
+                // idSIButton9
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+
+                // passwd
+                WebElement passwd = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name='passwd']")));
+                passwd.clear();
+                passwd.sendKeys(account[1]);
+
+                // idSIButton9
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+
+                // idSIButton9
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
                 }
             } catch (Exception exception) {
                 System.out.println("No 2 check");
@@ -326,27 +417,18 @@ public class Microsoft {
 
             // 下一步
             WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.Column-module__col6___keGm9.ContextualStoreProductDetailsPage-module__paddingLeft0___gaLHu.ContextualStoreProductDetailsPage-module__paddingRight0___gAqxV button.ContextualStoreProductDetailsPage-module__actionButton___wDRb8")));
-            while (true) {
-                try {
-                    next.click();
-                } catch (Exception exception) {
-                    break;
-                }
-            }
+            next.click();
 
+            Thread.sleep(50);
+
+            driver.switchTo().defaultContent();
             driver.switchTo().frame("purchase-sdk-hosted-iframe");
 
             // add pay way
             WebElement nextButton = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='primary--DXmYtnzQ base--kY64RzQE']")));
 
             // I don't know what this code is for, but don't delete it, it will cause the code to not run smoothly
-            while (true) {
-                try {
-                    nextButton.click();
-                } catch (Exception exception) {
-                    break;
-                }
-            }
+            nextButton.click();
 
             // alipay
             WebElement alipay1 = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("displayId_ewallet")));
@@ -419,12 +501,12 @@ public class Microsoft {
             }
 
             driver.switchTo().window(driver.getWindowHandles().stream().toList().get(0));
+            driver.switchTo().defaultContent();
             driver.switchTo().frame("purchase-sdk-hosted-iframe");
 
             driverWait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-            next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("pidlddc-button-alipayContinueButton")));
-
+            next = driverWait.until(ExpectedConditions.elementToBeClickable(By.id("pidlddc-button-alipayContinueButton")));
             while (true) {
                 try {
                     next.click();
@@ -432,46 +514,58 @@ public class Microsoft {
                     break;
                 }
             }
+
+            String js = "document.getElementById('pidlddc-button-alipayContinueButton').click()";
+            driver.executeScript(js);
 
             // In Mihoyo xd
-            WebElement city = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("city")));
-            city.sendKeys("Shanghai");
+            try {
+                WebElement city = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("city")));
+                city.sendKeys("Shanghai");
 
-            WebElement address = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("address_line1")));
-            address.sendKeys("5th floor, Building C, No. 700 Yishan Road, Xuhui District, Shanghai");
+                WebElement address = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("address_line1")));
+                address.sendKeys("5th floor, Building C, No. 700 Yishan Road, Xuhui District, Shanghai");
 
-            next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("pidlddc-button-saveButton")));
-            next.click();
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("pidlddc-button-saveButton")));
+                next.click();
 
-            while (true) {
-                try {
-                    nextButton = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='primary--DXmYtnzQ base--kY64RzQE']")));
-                    break;
-                } catch (Exception exception) {
-                    next.click();
+                while (true) {
+                    try {
+                        nextButton = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='primary--DXmYtnzQ base--kY64RzQE']")));
+                        break;
+                    } catch (Exception exception) {
+                        next.click();
+                    }
                 }
+
+                nextButton.click();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
 
-            nextButton.click();
 
-            next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='ContextualStoreProductDetailsPage-module__width100___Rn+5k ContextualStoreProductDetailsPage-module__marginTop1___fzkzL ContextualStoreProductDetailsPage-module__actionButton___wDRb8 ContextualStoreProductDetailsPage-module__uiExpActionButton___5lfV2 Button-module__defaultBase___c7wIT Button-module__heroMediumBorderRadius___dUTPQ Button-module__buttonBase___olICK Button-module__textNoUnderline___kHdUB Button-module__typeBrand___MMuct Button-module__sizeMedium___T+8s+ Button-module__overlayModeSolid___v6EcO']")));
-            while (true) {
-                try {
-                    next.click();
-                } catch (Exception exception) {
-                    break;
+            try {
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='ContextualStoreProductDetailsPage-module__width100___Rn+5k ContextualStoreProductDetailsPage-module__marginTop1___fzkzL ContextualStoreProductDetailsPage-module__actionButton___wDRb8 ContextualStoreProductDetailsPage-module__uiExpActionButton___5lfV2 Button-module__defaultBase___c7wIT Button-module__heroMediumBorderRadius___dUTPQ Button-module__buttonBase___olICK Button-module__textNoUnderline___kHdUB Button-module__typeBrand___MMuct Button-module__sizeMedium___T+8s+ Button-module__overlayModeSolid___v6EcO']")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
                 }
-            }
 
-            nextButton = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='primary--DXmYtnzQ base--kY64RzQE']")));
+                nextButton = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='primary--DXmYtnzQ base--kY64RzQE']")));
 
-            // I don't know what this code is for, but don't delete it, it will cause the code to not run smoothly
-            while (true) {
-                try {
-                    nextButton.click();
-                } catch (Exception exception) {
-                    break;
+                // I don't know what this code is for, but don't delete it, it will cause the code to not run smoothly
+                while (true) {
+                    try {
+                        nextButton.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
                 }
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
 
             try {

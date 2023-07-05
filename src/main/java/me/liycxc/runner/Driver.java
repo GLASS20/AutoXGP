@@ -26,6 +26,10 @@ public class Driver {
         FirefoxDriver driver;
         FirefoxOptions options = new FirefoxOptions();
         FirefoxProfile firefoxProfile = new FirefoxProfile(new File(AppMain.DRIVER_DATA));
+        firefoxProfile.setPreference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58");
+        firefoxProfile.setPreference("dom.webdriver.enabled", false);
+        firefoxProfile.setPreference("useAutomationExtension", false);
+        options.addArguments("--disable-gpu");
         options.addPreference("dom.webdriver.enabled", false);
         options.addPreference("useAutomationExtension", false);
         options.setProfile(firefoxProfile);
@@ -34,6 +38,8 @@ public class Driver {
         options.setCapability("prefs", prefs);
 
         driver = new FirefoxDriver(options);
+
+        driver.manage().deleteAllCookies();
 
         return driver;
     }
