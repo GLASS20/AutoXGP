@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.liycxc.AppMain;
 import me.liycxc.utils.CookieUtils;
 import me.shivzee.JMailTM;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -76,7 +77,7 @@ public class Microsoft {
         } catch (Exception exception) {
             exception.printStackTrace();
             json.put("code", 1);
-            json.put("msg", exception.toString());
+            json.put("msg", ExceptionUtils.getFullStackTrace(exception));
             return json;
         }
 
@@ -250,7 +251,7 @@ public class Microsoft {
             return json;
         } catch (Exception exception) {
             json.put("code", 1);
-            json.put("msg", exception.toString());
+            json.put("msg", ExceptionUtils.getFullStackTrace(exception));
             return json;
         }
     }
@@ -487,6 +488,13 @@ public class Microsoft {
                     }
 
                     try {
+                        next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[text()='下一步']")));
+                        action.click(next).perform();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+
+                    try {
                         // In Mihoyo xd
                         WebElement city = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("city")));
                         city.sendKeys("Shanghai");
@@ -497,12 +505,18 @@ public class Microsoft {
                         next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@value=\"儲存\"]")));
                         action.click(next).perform();
                     } catch (Exception exception) {
+                        exception.printStackTrace();
                     }
 
-                    next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(text(), '訂閱')]")));
-                    action.click(next).perform();
+                    try {
+                        next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(text(), '訂閱')]")));
+                        action.click(next).perform();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 }
             } catch (Exception exception) {
+                exception.printStackTrace();
                 next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(text(), '訂閱')]")));
                 action.click(next).perform();
             }
@@ -530,7 +544,7 @@ public class Microsoft {
         } catch (Exception exception) {
             exception.printStackTrace();
             json.put("code", 1);
-            json.put("msg", exception.toString());
+            json.put("msg", ExceptionUtils.getFullStackTrace(exception));
             return json;
         }
     }
@@ -871,7 +885,7 @@ public class Microsoft {
         } catch (Exception exception) {
             exception.printStackTrace();
             json.put("code", 1);
-            json.put("msg", exception.toString());
+            json.put("msg", ExceptionUtils.getFullStackTrace(exception));
             return json;
         }
     }
@@ -916,7 +930,7 @@ public class Microsoft {
         } catch (Exception exception) {
             exception.printStackTrace();
             json.put("code", 1);
-            json.put("msg", exception.toString());
+            json.put("msg", ExceptionUtils.getFullStackTrace(exception));
             return json;
         }
     }
@@ -962,14 +976,14 @@ public class Microsoft {
 
             passwdSender(account, new WebDriverWait(driver, Duration.ofSeconds(5)));
 
-            WebElement dele = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@aria-label='删除支付宝']")));
+            WebElement dele = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='ms-Button ms-Button--action ms-Button--command root-254']")));
             dele.click();
 
-            WebElement deled = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='删除']")));
+            WebElement deled = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='ms-Button ms-Button--primary root-290']")));
             deled.click();
 
             try {
-                WebElement info = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='已从你的帐户中删除支付宝帐户!']")));
+                WebElement info = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[text()='Alipay account has been removed from your account!']")));
                 System.out.println(info);
 
                 json.put("code", 0);
@@ -981,7 +995,7 @@ public class Microsoft {
         } catch (Exception exception) {
             exception.printStackTrace();
             json.put("code", 1);
-            json.put("msg", exception.toString());
+            json.put("msg", ExceptionUtils.getFullStackTrace(exception));
             return json;
         }
     }

@@ -82,9 +82,9 @@ public class Runner {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode().objectNode();
 
-        // String[] account = new String[]{"baxaliwettigk@hotmail.com", "hYiaui13"};
-        String[] account = new String[]{"reastkasisi0@hotmail.com", "USRO6v52"};
-        //String[] account = Mail.getMailByApi();
+        String[] account = new String[]{"ximengmimisa5@hotmail.com", "oZtoyR37"};
+        // String[] account = new String[]{"reastkasisi0@hotmail.com", "USRO6v52"};
+        // String[] account = Mail.getMailByApi();
         if (account == null || account[0] == null || account[1] == null) {
             json.put("code", -1);
             json.put("step", "Check account");
@@ -102,7 +102,7 @@ public class Runner {
             json.put("code", 1);
             json.put("step", "Login alipay with cookie");
             json.put("error", alipayJson.get("msg").asText());
-            // driver.quit();
+            driver.quit();
             return json.toString();
         }
 
@@ -112,7 +112,7 @@ public class Runner {
             json.put("code", loginJson.get("code").asInt());
             json.put("step", "Login microsoft account");
             json.put("error", loginJson.get("msg").asText());
-            // driver.quit();
+            driver.quit();
             return json.toString();
         }
 
@@ -121,7 +121,7 @@ public class Runner {
             json.put("code", xgpJson.get("code").asInt());
             json.put("step", "Subscribe to xbox game pass");
             json.put("error", xgpJson.get("msg").asText());
-            //driver.quit();
+            driver.quit();
             return json.toString();
         }
 
@@ -130,7 +130,7 @@ public class Runner {
             json.put("code", archiveJson.get("code").asInt());
             json.put("step", "Set minecraft id");
             json.put("error", archiveJson.get("msg").asText());
-            //driver.quit();
+            driver.quit();
             return json.toString();
         }
 
