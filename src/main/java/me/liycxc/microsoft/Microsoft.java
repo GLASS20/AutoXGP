@@ -8,6 +8,7 @@ import me.shivzee.JMailTM;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -254,6 +255,287 @@ public class Microsoft {
         }
     }
 
+    public static ObjectNode gamePassNew(FirefoxDriver driver, String[] account) {
+        ObjectNode json = OBJECT_MAPPER.createObjectNode();
+
+        try {
+            driver.get("https://www.xbox.com/zh-HK/xbox-game-pass/pc-game-pass?xr=shellnav");
+            WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebDriverWait threeWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+            // click login by cookie
+            int index = 0;
+            try {
+                WebElement login = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("mectrl_main_trigger")));
+                while (true) {
+                    if (index > 5) {
+                        break;
+                    }
+                    try {
+                        login.click();
+                        index++;
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+
+            // first set xbox archive
+            try {
+                index = 1;
+                while (true) {
+                    // Xbox archive nameid
+                    WebElement nameId = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("create-account-gamertag-suggestion-" + index)));
+                    while (true) {
+                        try {
+                            nameId.click();
+                        } catch (Exception exception) {
+                            break;
+                        }
+                    }
+
+                    try {
+                        // id failure
+                        if (index > 4) {
+                            json.put("code", 1);
+                            json.put("msg", "Set xbox id error");
+                            return json;
+                        }
+
+                        WebElement failure = threeWait.until(ExpectedConditions.presenceOfElementLocated(By.className("failure")));
+                        if (!failure.isDisplayed()) {
+                            break;
+                        }
+                        index++;
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+
+                // inline-continue-control
+                WebElement letGo = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("inline-continue-control")));
+                while (true) {
+                    try {
+                        letGo.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+
+            // click joinus xd
+            index = 0;
+            while (true) {
+                if (index > 5) {
+                    throw new Exception("Check xbox pass game Internet error");
+                }
+                try {
+                    // c-call-to-action c-glyph xbstorebuy xbstoreDynAdd storeDynAdded
+                    WebElement joinUs = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href='JavaScript:void(0);' and @role='button' and @class='c-call-to-action c-glyph xbstorebuy xbstoreDynAdd storeDynAdded']")));
+                    while (true) {
+                        try {
+                            joinUs.click();
+                        } catch (Exception exception) {
+                            break;
+                        }
+                    }
+                    break;
+                } catch (Exception exception) {
+                    index++;
+                    driver.navigate().refresh();
+                }
+            }
+
+            try {
+                // loginfmt
+                WebElement loginfmt = threeWait.until(ExpectedConditions.presenceOfElementLocated(By.name("loginfmt")));
+
+                loginfmt.sendKeys(account[0]);
+
+                // idSIButton9
+                WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+
+
+                WebDriverWait errorWait = new WebDriverWait(driver, Duration.ofMillis(1500));
+
+                // usernameError
+                try {
+                    WebElement error = errorWait.until(ExpectedConditions.presenceOfElementLocated(By.id("usernameError")));
+                    if (error.isDisplayed()) {
+                        throw new Exception("Username error");
+                    }
+                } catch (Exception ignored) {
+                }
+
+                // idSIButton9
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+
+                // passwd
+                WebElement passwd = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name='passwd']")));
+                passwd.clear();
+                passwd.sendKeys(account[1]);
+
+                // idSIButton9
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+
+                // idSIButton9
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+                while (true) {
+                    try {
+                        next.click();
+                    } catch (Exception exception) {
+                        break;
+                    }
+                }
+            } catch (Exception exception) {
+                System.out.println("No 2 check");
+            }
+
+            // 下一步
+            WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@aria-label='下一步']")));
+            Actions action = new Actions(driver);
+            action.click(next).perform();
+
+            Thread.sleep(50);
+
+            driver.switchTo().defaultContent();
+            driver.switchTo().frame("purchase-sdk-hosted-iframe");
+
+            next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(text(), \"下一步\")]")));
+            action.click(next).perform();
+
+            try {
+                {
+                    // alipay
+                    WebElement alipay1 = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("displayId_ewallet")));
+                    action.click(alipay1).perform();
+
+                    // alipay
+                    WebElement alipay2 = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("displayId_ewallet_alipay_billing_agreement")));
+                    action.click(alipay2).perform();
+
+                    // next
+                    next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@value='下一步']")));
+                    action.click(next).perform();
+
+                    // login alipay
+                    WebElement alipay3 = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("pidlddc-hyperlink-alipayQrCodeChallengeRedirectionLink")));
+                    action.click(alipay3).perform();
+
+                    try {
+                        driver.switchTo().defaultContent();
+                        driver.switchTo().window(driver.getWindowHandles().stream().toList().get(1));
+
+                        while (true) {
+                            try {
+                                WebElement payPasswordRsainput = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("payPassword_rsainput")));
+                                payPasswordRsainput.sendKeys(AppMain.API_ALIPAY_PAYKEY);
+
+                                WebElement jSubmit = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("J_submit")));
+                                action.click(jSubmit).perform();
+
+                                break;
+                            } catch (Exception exception) {
+                                driver.navigate().refresh();
+                            }
+                        }
+
+                        driver.switchTo().window(driver.getWindowHandles().stream().toList().get(0));
+                        driver.switchTo().defaultContent();
+                        driver.switchTo().frame("purchase-sdk-hosted-iframe");
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                        json.put("code", 1);
+                        json.put("msg", "alipay error");
+                        return json;
+                    }
+
+                    next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@aria-label='繼續']")));
+
+                    while (true) {
+                        try {
+                            action.click(next).perform();
+                        } catch (Exception exception) {
+                            break;
+                        }
+                        Thread.sleep(1000);
+                    }
+
+                    try {
+                        // In Mihoyo xd
+                        WebElement city = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("city")));
+                        city.sendKeys("Shanghai");
+
+                        WebElement address = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("address_line1")));
+                        address.sendKeys("5th floor, Building C, No. 700 Yishan Road, Xuhui District, Shanghai");
+
+                        next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@value=\"儲存\"]")));
+                        action.click(next).perform();
+                    } catch (Exception exception) {
+                    }
+
+                    next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(text(), '訂閱')]")));
+                    action.click(next).perform();
+                }
+            } catch (Exception exception) {
+                next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(text(), '訂閱')]")));
+                action.click(next).perform();
+            }
+
+            Thread.sleep(5000);
+
+            driver.switchTo().defaultContent();
+            index = 0;
+            while (true) {
+                if (index > 10) {
+                    throw new Exception("Thank you page not display");
+                }
+                try {
+                    WebElement check = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[text()='感謝您加入']")));
+                    System.out.println(check.getText());
+                    break;
+                } catch (Exception exception) {
+                    index++;
+                }
+            }
+
+            json.put("code", 0);
+            json.put("msg", "ok");
+            return json;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            json.put("code", 1);
+            json.put("msg", exception.toString());
+            return json;
+        }
+    }
+
+    @Deprecated(since = "Please use func gamePassNew")
     public static ObjectNode gamePassByCookie(FirefoxDriver driver, String[] account) throws InterruptedException {
         // https://www.xbox.com/en-US/xbox-game-pass
         ObjectNode json = OBJECT_MAPPER.createObjectNode();
@@ -417,7 +699,8 @@ public class Microsoft {
 
             // 下一步
             WebElement next = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.Column-module__col6___keGm9.ContextualStoreProductDetailsPage-module__paddingLeft0___gaLHu.ContextualStoreProductDetailsPage-module__paddingRight0___gAqxV button.ContextualStoreProductDetailsPage-module__actionButton___wDRb8")));
-            next.click();
+            Actions action = new Actions(driver);
+            action.click(next).perform();
 
             Thread.sleep(50);
 
@@ -482,6 +765,8 @@ public class Microsoft {
             driverWait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
             try {
+                driver.switchTo().defaultContent();
+                driver.navigate().refresh();
                 WebElement payPasswordRsainput = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("payPassword_rsainput")));
                 payPasswordRsainput.sendKeys(AppMain.API_ALIPAY_PAYKEY);
 
@@ -626,6 +911,7 @@ public class Microsoft {
 
             json.put("code", 0);
             json.put("msg", "ok");
+            json.put("player", playerId);
             return json;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -651,7 +937,7 @@ public class Microsoft {
                 }
             }
 
-            WebElement kcb = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@aria-label='立即取消并获取退款']")));
+            WebElement kcb = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("ChoiceGroup62-cancel-now")));
             kcb.click();
 
             WebElement scs = driverWait.until(ExpectedConditions.presenceOfElementLocated(By.id("cancel-select-cancel")));

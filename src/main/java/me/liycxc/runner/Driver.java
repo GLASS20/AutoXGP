@@ -1,6 +1,7 @@
 package me.liycxc.runner;
 
 import me.liycxc.AppMain;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -29,6 +30,7 @@ public class Driver {
         firefoxProfile.setPreference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58");
         firefoxProfile.setPreference("dom.webdriver.enabled", false);
         firefoxProfile.setPreference("useAutomationExtension", false);
+        options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
         options.addArguments("--disable-gpu");
         options.addPreference("dom.webdriver.enabled", false);
         options.addPreference("useAutomationExtension", false);

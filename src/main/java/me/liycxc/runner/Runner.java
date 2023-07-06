@@ -82,8 +82,9 @@ public class Runner {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode().objectNode();
 
-        String[] account =/* Mail.getMailByApi();*/ new String[]{"baxaliwettigk@hotmail.com", "hYiaui13"};
-
+        // String[] account = new String[]{"baxaliwettigk@hotmail.com", "hYiaui13"};
+        String[] account = new String[]{"reastkasisi0@hotmail.com", "USRO6v52"};
+        //String[] account = Mail.getMailByApi();
         if (account == null || account[0] == null || account[1] == null) {
             json.put("code", -1);
             json.put("step", "Check account");
@@ -115,7 +116,7 @@ public class Runner {
             return json.toString();
         }
 
-        ObjectNode xgpJson = Microsoft.gamePassByCookie(driver, account);
+        ObjectNode xgpJson = Microsoft.gamePassNew(driver, account);
         if (xgpJson.get("code").asInt() != 0) {
             json.put("code", xgpJson.get("code").asInt());
             json.put("step", "Subscribe to xbox game pass");
@@ -133,6 +134,8 @@ public class Runner {
             return json.toString();
         }
 
+        json.put("player", archiveJson.get("player").asText());
+
         ObjectNode backMoneyJson = Microsoft.backMoney(driver, account);
         if (backMoneyJson.get("code").asInt() != 0) {
             System.out.println("Back money error: " + account[0] + ":" + account[1]);
@@ -144,7 +147,6 @@ public class Runner {
         }
 
         json.put("code", 0);
-        json.put("account", account[0] + ":" + account[1]);
         //driver.quit();
         return json.toString();
     }
