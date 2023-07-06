@@ -9,9 +9,8 @@ import me.liycxc.utils.Generator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Objects;
 
 
 /**
@@ -82,8 +81,18 @@ public class Runner {
      * @param backmoney back my money!!
      * @return json like code 0/1
      */
-    @GetMapping("/get")
+    @RequestMapping("/get")
     public static String createMicrosoft(String email, String pwd, String playerid, boolean alipay, boolean login, boolean gamepass, boolean setid, boolean backmoney) {
+        System.out.println(email);
+        System.out.println(pwd);
+        System.out.println(playerid);
+        System.out.println(alipay);
+        System.out.println(login);
+        System.out.println(gamepass);
+        System.out.println(setid);
+        System.out.println(backmoney);
+
+
         FirefoxDriver driver = Driver.getDriver();
         driver.manage().deleteAllCookies();
 
@@ -91,7 +100,7 @@ public class Runner {
         ObjectNode json = objectMapper.createObjectNode().objectNode();
 
         String[] account = new String[]{"email", "password"};
-        if (!Objects.equals(email, "null") && !Objects.equals(pwd, "null")) {
+        if (email == null || pwd == null) {
             account = Mail.getMailByApi();
         } else {
             account[0] = email;
