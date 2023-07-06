@@ -69,6 +69,19 @@ public class Runner {
         return json.toString();
     }
 
+    /**
+     * get xgp account
+     *
+     * @param email     login account email
+     * @param pwd       login account password
+     * @param playerid  minecraft PlayerID
+     * @param alipay    login in alipay
+     * @param login     login microsoft
+     * @param gamepass  regist gamepass
+     * @param setid     reset minecraft PlayerID
+     * @param backmoney back my money!!
+     * @return json like code 0/1
+     */
     @GetMapping("/get")
     public static String createMicrosoft(String email, String pwd, String playerid, boolean alipay, boolean login, boolean gamepass, boolean setid, boolean backmoney) {
         FirefoxDriver driver = Driver.getDriver();
