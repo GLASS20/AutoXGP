@@ -2,6 +2,7 @@ package me.liycxc.runner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import me.liycxc.AppMain;
 import me.liycxc.microsoft.Mail;
 import me.liycxc.microsoft.Microsoft;
 import me.liycxc.utils.CookieUtils;
@@ -71,6 +72,7 @@ public class Runner {
     /**
      * get xgp account
      *
+     * @param token     token i know
      * @param email     login account email
      * @param pwd       login account password
      * @param playerid  minecraft PlayerID
@@ -82,7 +84,7 @@ public class Runner {
      * @return json like code 0/1
      */
     @RequestMapping("/get")
-    public static String createMicrosoft(String email, String pwd, String playerid, boolean alipay, boolean login, boolean gamepass, boolean setid, boolean backmoney) {
+    public static String createMicrosoft(String token, String email, String pwd, String playerid, boolean alipay, boolean login, boolean gamepass, boolean setid, boolean backmoney) {
         System.out.println(email);
         System.out.println(pwd);
         System.out.println(playerid);
@@ -92,12 +94,19 @@ public class Runner {
         System.out.println(setid);
         System.out.println(backmoney);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode json = objectMapper.createObjectNode().objectNode();
+
+        if (!AppMain.API_HTTP_TOKEN.equals(token)) {
+            json.put("code", 1);
+            json.put("step", "Check http");
+            json.put("error", "Token error");
+            return json.toString();
+        }
+
 
         FirefoxDriver driver = Driver.getDriver();
         driver.manage().deleteAllCookies();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectNode json = objectMapper.createObjectNode().objectNode();
 
         String[] account = new String[]{"email", "password"};
         if (email == null || pwd == null) {

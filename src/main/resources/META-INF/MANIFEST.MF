@@ -1,0 +1,66 @@
+Manifest-Version: 1.0
+Main-Class: me.liycxc.AppMain
+Class-Path: spring-boot-autoconfigure-3.1.1.jar opentelemetry-sdk-extens
+ ion-autoconfigure-spi-1.25.0.jar error_prone_annotations-2.11.0.jar aut
+ o-service-annotations-1.0.1.jar selenium-support-4.8.3.jar netty-transp
+ ort-native-epoll-4.1.94.Final.jar spring-beans-6.0.10.jar selenium-json
+ -4.8.3.jar netty-handler-4.1.94.Final.jar opentelemetry-sdk-logs-1.25.0
+ -alpha.jar selenium-safari-driver-4.8.3.jar auto-service-1.0.1.jar lomb
+ ok-1.18.28.jar jsonassert-1.5.1.jar netty-transport-native-kqueue-4.1.9
+ 4.Final-osx-x86_64.jar jakarta.xml.bind-api-4.0.0.jar httpcore-4.4.16.j
+ ar opentelemetry-sdk-metrics-1.25.0.jar selenium-devtools-v114-4.10.0.j
+ ar jakarta.activation-api-2.1.2.jar kotlin-stdlib-common-1.8.22.jar spr
+ ing-jcl-6.0.10.jar async-http-client-netty-utils-2.12.3.jar okhttp-4.10
+ .0.jar mockito-junit-jupiter-5.3.1.jar j2objc-annotations-1.3.jar auto-
+ common-1.2.jar JMailTM-0.7.0.jar tomcat-embed-el-10.1.10.jar spring-boo
+ t-starter-test-3.1.1.jar mysql-connector-j-8.0.33.jar json-path-2.8.0.j
+ ar opentelemetry-sdk-trace-1.25.0.jar jtoml-2.0.0.jar selenium-api-4.8.
+ 3.jar okhttp-eventsource-2.5.0.jar commons-lang-2.6.jar async-http-clie
+ nt-2.12.3.jar opentelemetry-api-1.25.0.jar netty-codec-socks-4.1.94.Fin
+ al.jar micrometer-observation-1.11.1.jar guava-31.1-jre.jar kotlin-stdl
+ ib-1.8.22.jar micrometer-commons-1.11.1.jar netty-transport-native-kque
+ ue-4.1.94.Final.jar failureaccess-1.0.1.jar spring-boot-3.1.1.jar sprin
+ g-boot-starter-3.1.1.jar junit-jupiter-api-5.9.3.jar netty-codec-http-4
+ .1.94.Final.jar log4j-to-slf4j-2.20.0.jar jackson-datatype-jsr310-2.15.
+ 2.jar reactive-streams-1.0.4.jar jackson-databind-2.15.2.jar slf4j-api-
+ 2.0.7.jar netty-transport-4.1.94.Final.jar netty-transport-native-epoll
+ -4.1.94.Final-linux-x86_64.jar jsr305-3.0.2.jar gson-2.10.1.jar jackson
+ -datatype-jdk8-2.15.2.jar hamcrest-core-2.2.jar xmlunit-core-2.9.1.jar 
+ junit-jupiter-5.9.3.jar android-json-0.0.20131108.vaadin1.jar commons-l
+ ogging-1.2.jar accessors-smart-2.4.11.jar byte-buddy-1.14.5.jar spring-
+ boot-starter-logging-3.1.1.jar netty-transport-classes-kqueue-4.1.94.Fi
+ nal.jar opentelemetry-exporter-logging-1.25.0.jar asm-9.3.jar spring-we
+ b-6.0.10.jar spring-core-6.0.10.jar listenablefuture-9999.0-empty-to-av
+ oid-conflict-with-guava.jar spring-context-6.0.10.jar opentelemetry-sem
+ conv-1.25.0-alpha.jar json-simple-1.1.1.jar opentelemetry-sdk-1.25.0.ja
+ r spring-boot-test-3.1.1.jar kotlin-stdlib-jdk7-1.8.22.jar spring-boot-
+ starter-tomcat-3.1.1.jar spring-test-6.0.10.jar spring-boot-starter-jso
+ n-3.1.1.jar selenium-devtools-v113-4.10.0.jar tomcat-embed-websocket-10
+ .1.10.jar kotlin-stdlib-jdk8-1.8.22.jar selenium-ie-driver-4.8.3.jar sp
+ ring-boot-devtools-3.1.1.jar logback-classic-1.4.8.jar opentest4j-1.2.0
+ .jar selenium-remote-driver-4.8.3.jar spring-expression-6.0.10.jar okio
+ -jvm-3.0.0.jar netty-transport-classes-epoll-4.1.94.Final.jar junit-pla
+ tform-commons-1.9.3.jar commons-exec-1.3.jar netty-reactive-streams-2.0
+ .4.jar netty-resolver-4.1.94.Final.jar opentelemetry-api-events-1.25.0-
+ alpha.jar annotations-13.0.jar netty-handler-proxy-4.1.94.Final.jar byt
+ e-buddy-agent-1.14.5.jar logback-core-1.4.8.jar checker-qual-3.12.0.jar
+  selenium-http-4.8.3.jar selenium-java-4.10.0.jar selenium-edge-driver-
+ 4.8.3.jar commons-lang3-3.12.0.jar netty-transport-native-unix-common-4
+ .1.94.Final.jar selenium-chromium-driver-4.8.3.jar opentelemetry-contex
+ t-1.25.0.jar netty-codec-4.1.94.Final.jar httpclient-4.5.13.jar junit-j
+ upiter-params-5.9.3.jar selenium-devtools-v112-4.10.0.jar selenium-fire
+ fox-driver-4.8.3.jar jakarta.activation-1.2.2.jar snakeyaml-1.33.jar sp
+ ring-webmvc-6.0.10.jar jul-to-slf4j-2.0.7.jar junit-4.13.2.jar hamcrest
+ -2.2.jar junit-jupiter-engine-5.9.3.jar commons-codec-1.15.jar jackson-
+ annotations-2.15.2.jar netty-buffer-4.1.94.Final.jar selenium-manager-4
+ .8.3.jar objenesis-3.3.jar spring-boot-test-autoconfigure-3.1.1.jar sel
+ enium-devtools-v85-4.8.3.jar junit-platform-engine-1.9.3.jar failsafe-3
+ .3.1.jar selenium-chrome-driver-4.8.3.jar spring-aop-6.0.10.jar log4j-a
+ pi-2.20.0.jar jackson-module-parameter-names-2.15.2.jar jackson-core-2.
+ 15.2.jar jcommander-1.82.jar mockito-core-5.3.1.jar netty-common-4.1.94
+ .Final.jar opentelemetry-sdk-extension-autoconfigure-1.24.0-alpha.jar j
+ son-smart-2.4.11.jar spring-boot-starter-web-3.1.1.jar opentelemetry-sd
+ k-common-1.25.0.jar tomcat-embed-core-10.1.10.jar opentelemetry-api-log
+ s-1.25.0-alpha.jar assertj-core-3.24.2.jar jakarta.annotation-api-2.1.1
+ .jar
+
