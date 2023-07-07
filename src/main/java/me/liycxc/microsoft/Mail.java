@@ -40,7 +40,7 @@ import java.util.List;
  */
 @Slf4j
 public class Mail {
-    public static String MAIL_API = "https://api.yx1024.cc/getAccountApi.aspx?uid=56264&type=69&token=" + AppMain.API_MAIL_TOKEN +"&count=1";
+    public static String MAIL_API = "http://proxy.ly250.xyz/proxy/api.yx1024.cc/getAccountApi.aspx?uid=56264&type=69&token=" + AppMain.API_MAIL_TOKEN + "&count=1";
 
     public static String[] getMailByApi() {
         SSLContext sslContext = null;

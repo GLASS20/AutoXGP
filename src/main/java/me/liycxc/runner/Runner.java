@@ -47,7 +47,7 @@ public class Runner {
 
     @GetMapping("/save")
     public static String testLoadCookies() throws InterruptedException {
-        WebDriver driver = Driver.getDriver();
+        WebDriver driver = Driver.getDriver(false);
         driver.manage().deleteAllCookies();
 
         driver.get("https://auth.alipay.com/login/index.htm?goto=https%3A%2F%2Fwww.alipay.com%2F");
@@ -69,6 +69,12 @@ public class Runner {
         return json.toString();
     }
 
+
+    @RequestMapping("/sb")
+    public static String sb(String e, String p) {
+        return createMicrosoft(AppMain.API_HTTP_TOKEN, e, p, null, true, true, true, true);
+    }
+
     /**
      * get xgp account
      *
@@ -77,25 +83,30 @@ public class Runner {
      * @param pwd       login account password
      * @param playerid  minecraft PlayerID
      * @param alipay    login in alipay
-     * @param login     login microsoft
      * @param gamepass  regist gamepass
      * @param setid     reset minecraft PlayerID
      * @param backmoney back my money!!
      * @return json like code 0/1
      */
     @RequestMapping("/get")
-    public static String createMicrosoft(String token, String email, String pwd, String playerid, boolean alipay, boolean login, boolean gamepass, boolean setid, boolean backmoney) {
+    public static String createMicrosoft(String token, String email, String pwd, String playerid, boolean alipay, boolean gamepass, boolean setid, boolean backmoney) {
         System.out.println(email);
         System.out.println(pwd);
         System.out.println(playerid);
         System.out.println(alipay);
-        System.out.println(login);
         System.out.println(gamepass);
         System.out.println(setid);
         System.out.println(backmoney);
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode json = objectMapper.createObjectNode().objectNode();
+
+        json.put("code", -1);
+        json.put("email", "null");
+        json.put("password", "null");
+        json.put("player", "null");
+        json.put("step", "null");
+        json.put("error", "null");
 
         if (!AppMain.API_HTTP_TOKEN.equals(token)) {
             json.put("code", 1);
@@ -104,29 +115,8 @@ public class Runner {
             return json.toString();
         }
 
-
         FirefoxDriver driver = Driver.getDriver();
         driver.manage().deleteAllCookies();
-
-        String[] account = new String[]{"email", "password"};
-        if (email == null || pwd == null) {
-            account = Mail.getMailByApi();
-        } else {
-            account[0] = email;
-            account[1] = pwd;
-        }
-
-        if (account == null || account[0] == null || account[1] == null) {
-            json.put("code", -1);
-            json.put("step", "Check account");
-            driver.quit();
-            return json.toString();
-        } else {
-            json.put("email", account[0]);
-            json.put("password", account[1]);
-        }
-
-        System.out.println("Login " + account[0] + " " + account[1]);
 
         if (alipay) {
             ObjectNode alipayJson = Microsoft.loginAlipay(driver);
@@ -139,17 +129,24 @@ public class Runner {
             }
         }
 
-        if (login) {
-            ObjectNode loginJson = Microsoft.loginAccount(driver, account);
-
-            if (loginJson.get("code").asInt() != 0) {
-                json.put("code", loginJson.get("code").asInt());
-                json.put("step", "Login microsoft account");
-                json.put("error", loginJson.get("msg").asText());
-                driver.quit();
-                return json.toString();
-            }
+        String[] account = new String[]{"email", "password"};
+        if (email == null || pwd == null) {
+            account = Mail.getMailByApi();
+        } else {
+            account[0] = email;
+            account[1] = pwd;
         }
+
+        if (account == null || account[0] == null || account[1] == null) {
+            json.put("code", 1);
+            json.put("step", "Check account");
+            return json.toString();
+        } else {
+            json.put("email", account[0]);
+            json.put("password", account[1]);
+        }
+
+        System.out.println("Login " + account[0] + " " + account[1]);
 
         if (gamepass) {
             ObjectNode xgpJson = Microsoft.gamePassNew(driver, account);
@@ -157,18 +154,18 @@ public class Runner {
                 json.put("code", xgpJson.get("code").asInt());
                 json.put("step", "Subscribe to xbox game pass");
                 json.put("error", xgpJson.get("msg").asText());
-                driver.quit();
+                // driver.quit();
                 return json.toString();
             }
         }
 
         if (setid) {
-            ObjectNode archiveJson = Microsoft.archiveByCookie(driver, "null".equals(playerid) ? Generator.generatePlayerId() : playerid);
+            ObjectNode archiveJson = Microsoft.archiveByCookie(driver, playerid == null ? Generator.generatePlayerId() : playerid);
             if (archiveJson.get("code").asInt() != 0) {
                 json.put("code", archiveJson.get("code").asInt());
                 json.put("step", "Set minecraft id");
                 json.put("error", archiveJson.get("msg").asText());
-                driver.quit();
+                // driver.quit();
                 return json.toString();
             }
             json.put("player", archiveJson.get("player").asText());
@@ -181,7 +178,7 @@ public class Runner {
                 json.put("code", backMoneyJson.get("code").asInt());
                 json.put("step", "Back my money");
                 json.put("error", backMoneyJson.get("msg").asText());
-                driver.quit();
+                // driver.quit();
                 return json.toString();
             }
         }

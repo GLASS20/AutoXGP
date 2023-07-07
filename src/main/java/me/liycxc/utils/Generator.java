@@ -18,7 +18,7 @@ public class Generator {
     }
 
     public static String generatePlayerId() {
-        return "liy" + generateRandomString(6);
+        return "L" + generateRandomString(7);
     }
 
     // 生成随机密码

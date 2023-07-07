@@ -21,6 +21,10 @@ import java.util.Map;
  */
 public class Driver {
     public static FirefoxDriver getDriver() {
+        return getDriver(AppMain.DRIVER_HEADLESS);
+    }
+
+    public static FirefoxDriver getDriver(boolean headless) {
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 
@@ -31,6 +35,9 @@ public class Driver {
         firefoxProfile.setPreference("dom.webdriver.enabled", false);
         firefoxProfile.setPreference("useAutomationExtension", false);
         options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
+        if (headless) {
+            options.addArguments("--headless");
+        }
         options.addArguments("--disable-gpu");
         options.addPreference("dom.webdriver.enabled", false);
         options.addPreference("useAutomationExtension", false);
